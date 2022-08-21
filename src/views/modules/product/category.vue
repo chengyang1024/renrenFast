@@ -32,6 +32,6 @@ export default {
   destroyed() {}, //生命周期 - 销毁完成
   activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 };
-</script>
+</script> 
 <style scoped>
 </style> 
