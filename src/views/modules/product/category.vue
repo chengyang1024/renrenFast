@@ -1,6 +1,32 @@
 <!--  -->
 <template>
-  <div class="">三级分类维护111222</div>
+  <el-tree
+    :data="menus"
+    :props="defaultProps"
+    :expand-on-click-node="false"
+    show-checkbox="false"
+    node-key="catId"
+    >
+    <span class="custom-tree-node" slot-scope="{ node, data }">
+        <span>{{ node.label }}</span>
+        <span>
+          <el-button
+            v-if="node.childNodes.length>0"
+            type="text"
+            size="mini"
+            @click="() => append(data)">
+            Append
+          </el-button>
+          <el-button
+            v-if="node.childNodes.length==0"
+            type="text"
+            size="mini"
+            @click="() => remove(node, data)">
+            Delete
+          </el-button>
+        </span>
+      </span>
+    </el-tree>
 </template>
 
 <script>
@@ -11,17 +37,49 @@ export default {
   //import引入的组件需要注入到对象中才能使用
   components: {},
   data() {
-    //这里存放数据
-    return {};
+    return {
+      menus: [],
+      defaultProps: {
+        children: "childrens",
+        label: "name",
+      },
+    };
   },
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
   watch: {},
   //方法集合
-  methods: {},
+  methods: {
+    append(data) {
+      console.log("data",data)
+      },
+
+      remove(node, data) {
+        console.log("node",node)
+        console.log("data",data)
+      },
+
+    handleNodeClick(data) {
+      console.log(data);
+    },
+    // 获取数据列表
+    getDataList() {
+      this.dataListLoading = true;
+      this.$http({
+        url: this.$http.adornUrl("/product/category/list/tree"),
+        method: "get"
+      }).then(({data})=>{
+        console.log("成功获取菜单数据",data.listTree)
+        ,this.menus=data.listTree
+      }
+      );
+    },
+  },
   //生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
+  created() {
+    this.getDataList();
+  },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
